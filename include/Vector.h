@@ -5,17 +5,25 @@
 #ifndef MYSTL_VECTOR_H
 #define MYSTL_VECTOR_H
 
+#include "GenericIterator.h"
+
 namespace MySTL {
     template<typename T>
     class Vector final {
     public:
         Vector();
         explicit Vector(size_t sz, const T &t = T());
+        Vector(const Vector &other);
+        Vector(Vector &&other) noexcept;
+        Vector &operator=(const Vector &other);
+        Vector &operator=(Vector &&other) noexcept;
+
+        Vector(std::initializer_list<T> list);
         ~Vector();
 
-        bool empty();
-        size_t size();
-        size_t capacity();
+        [[nodiscard]] bool empty() const;
+        [[nodiscard]] size_t size() const;
+        [[nodiscard]] size_t capacity() const;
         void resize(size_t sz);
         void resize(size_t sz, const T &t);
         void reserve(size_t sz);
@@ -31,6 +39,28 @@ namespace MySTL {
         const T& operator[](size_t index) const;
         T& at(size_t index);
         const T& at(size_t index) const;
+
+        void insert(size_t index, const T& value);
+        void erase(size_t index);
+
+        template <typename... Args>
+        void emplace_back(Args&&... args);
+
+        void swap(Vector &other) noexcept;
+
+        using iterator = GenericIterator<T>;
+        using const_interator = GenericIterator<const T>;
+        using reverse_iterator = GenericReverseIterator<T>;
+        using const_reverse_iterator = GenericReverseIterator<const T>;
+
+        iterator begin();
+        iterator end();
+        reverse_iterator rbegin();
+        reverse_iterator rend();
+        const_interator cbegin();
+        const_interator cend();
+        const_reverse_iterator crbegin();
+        const_reverse_iterator crend();
 
     private:
         T *data;
