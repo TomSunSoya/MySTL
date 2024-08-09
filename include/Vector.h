@@ -1,7 +1,3 @@
-//
-// Created by qiuyudai on 2023/12/14.
-//
-
 #ifndef MYSTL_VECTOR_H
 #define MYSTL_VECTOR_H
 

@@ -1,7 +1,3 @@
-//
-// Created by qiuyudai on 24-8-8.
-//
-
 #ifndef GENERICITERATOR_H
 #define GENERICITERATOR_H
 
