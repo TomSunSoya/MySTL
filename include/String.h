@@ -1,8 +1,13 @@
-export module MyModule.String;
+#ifndef STRING_H_
+#define STRING_H_
+
+#include <sstream>
+
+#include "GenericIterator.h"
 
 namespace MySTL
 {
-    export class String final
+    class String final
     {
     public:
         static constexpr size_t npos = -1;
@@ -28,7 +33,6 @@ namespace MySTL
         bool operator>(const String&) const;
         bool operator>=(const String&) const;
 
-
         [[nodiscard]] const char* c_str() const;
         [[nodiscard]] bool empty() const;
         [[nodiscard]] size_t size() const;
@@ -51,6 +55,14 @@ namespace MySTL
         String& insert(size_t pos, const String& str);
         String& erase(size_t pos, size_t count = npos);
 
+        template <typename... Args>
+        static String format(const char* format, Args... args);
+
+
+        using iterator = GenericIterator<char>;
+        using const_iterator = GenericIterator<const char>;
+        // todo: implement iterator for char with UTF-8
+
     private:
         char* data;
         size_t len{};
@@ -61,5 +73,12 @@ namespace MySTL
         [[nodiscard]] static size_t getUtf8CharLength(char first_byte);
         static void encodeUtf8Char(char* dest, char32_t codepoint);
         static char32_t decodeUtf8Char(const char* bytes);
+        static void formatHelper(std::ostringstream& stream, const char* format);
+
+        template <typename T, typename... Args>
+        static void formatHelper(std::ostringstream& stream, const char* format, T value, Args... args);
     };
 }
+
+
+#endif // STRING_H_

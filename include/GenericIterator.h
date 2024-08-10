@@ -1,12 +1,11 @@
 #ifndef GENERICITERATOR_H
 #define GENERICITERATOR_H
 
-export module MyModule.GenericIterator;
 #include <random>
 
 namespace MySTL
 {
-    export template <typename T>
+    template <typename T>
     class GenericIterator
     {
     public:
@@ -89,7 +88,7 @@ namespace MySTL
     };
 
 
-    export template <typename T>
+    template <typename T>
     class GenericReverseIterator
     {
     public:
@@ -141,6 +140,45 @@ namespace MySTL
     private:
         pointer m_ptr;
     };
+}
+
+namespace MySTL
+{
+    template <typename T>
+    bool GenericIterator<T>::operator==(const GenericIterator& other) const
+    {
+        return m_ptr == other.m_ptr;
+    }
+
+    template <typename T>
+    bool GenericIterator<T>::operator!=(const GenericIterator& other) const
+    {
+        return m_ptr != other.m_ptr;
+    }
+
+    template <typename T>
+    bool GenericIterator<T>::operator>(const GenericIterator& other) const
+    {
+        return m_ptr > other.m_ptr;
+    }
+
+    template <typename T>
+    bool GenericIterator<T>::operator<(const GenericIterator& other) const
+    {
+        return m_ptr < other.m_ptr;
+    }
+
+    template <typename T>
+    bool GenericIterator<T>::operator>=(const GenericIterator& other) const
+    {
+        return m_ptr >= other.m_ptr;
+    }
+
+    template <typename T>
+    bool GenericIterator<T>::operator<=(const GenericIterator& other) const
+    {
+        return m_ptr <= other.m_ptr;
+    }
 }
 
 

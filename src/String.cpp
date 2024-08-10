@@ -1,6 +1,7 @@
-import MyModule.String;
+#include "../include/String.h"
 #include <algorithm>
 #include <cstring>
+#include <stdexcept>
 
 namespace MySTL
 {
@@ -420,6 +421,54 @@ namespace MySTL
             --pos;
 
         return decodeUtf8Char(data + pos);
+    }
+
+    void String::formatHelper(std::ostringstream& stream, const char* format)
+    {
+        while (*format)
+        {
+            if (*format == '%')
+            {
+                if (*(format + 1) == '%')
+                    ++format;
+                else
+                    throw std::runtime_error("Invalid format string: missing arguments");
+            }
+            stream << *format++;
+        }
+    }
+
+    template <typename T, typename... Args>
+    void String::formatHelper(std::ostringstream& stream, const char* format, T value, Args... args)
+    {
+        while (*format)
+        {
+            if (*format == '%')
+            {
+                if (*(format + 1) == '%')
+                {
+                    ++format;
+                    stream << '%';
+                } else
+                {
+                    stream << value;
+                    formatHelper(stream, format + 1, args...);
+                    return;
+                }
+            } else
+                stream << *format;
+            ++format;
+        }
+        if (sizeof...(args) > 0)
+            throw std::runtime_error("Extra arguments provided to format");
+    }
+
+    template <typename... Args>
+    String String::format(const char* format, Args... args)
+    {
+        std::ostringstream stream;
+        formatHelper(stream, format, args...);
+        return String(stream.str().c_str());
     }
 
 
