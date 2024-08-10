@@ -1,4 +1,4 @@
-#include "../include/GenericIterator.h"
+import MyModule.GenericIterator;
 
 namespace MySTL
 {

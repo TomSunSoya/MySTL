@@ -1,11 +1,12 @@
 #ifndef GENERICITERATOR_H
 #define GENERICITERATOR_H
 
+export module MyModule.GenericIterator;
 #include <random>
 
 namespace MySTL
 {
-    template <typename T>
+    export template <typename T>
     class GenericIterator
     {
     public:
@@ -88,7 +89,7 @@ namespace MySTL
     };
 
 
-    template <typename T>
+    export template <typename T>
     class GenericReverseIterator
     {
     public:

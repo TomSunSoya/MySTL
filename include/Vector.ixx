@@ -1,10 +1,10 @@
-#ifndef MYSTL_VECTOR_H
-#define MYSTL_VECTOR_H
+#include <algorithm>
 
-#include "GenericIterator.h"
+import MyModule.GenericIterator;
+export module MyModule.Vector;
 
 namespace MySTL {
-    template<typename T>
+    export template<typename T>
     class Vector final {
     public:
         Vector();
@@ -73,6 +73,3 @@ namespace MySTL {
         void move_elements_to(T* destination);
     };
 }
-
-
-#endif //MYSTL_VECTOR_H
