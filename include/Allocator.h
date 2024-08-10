@@ -11,10 +11,10 @@ namespace MySTL {
     class Allocator {
     public:
         using value_type = T;
-        using pointer = T*;
-        using const_pointer = const T*;
-        using reference = T&;
-        using const_reference = const T&;
+        using pointer = T *;
+        using const_pointer = const T *;
+        using reference = T &;
+        using const_reference = const T &;
         using size_type = size_t;
         using difference_type = ptrdiff_t;
 
@@ -23,7 +23,7 @@ namespace MySTL {
             using other = Allocator<U>;
         };
 
-        pointer allocate(size_type n, const void* hint = nullptr) {
+        pointer allocate(size_type n, const void *hint = nullptr) {
             if (n > this->max_size())
                 throw std::bad_alloc();
             return static_cast<pointer>(::operator new[](n * sizeof(T)));               // new T[n]会调用T的默认构造函数
@@ -34,8 +34,8 @@ namespace MySTL {
         }
 
         template<typename U, typename... Args>
-        void construct(U* p, Args&&... args) {
-            new(static_cast<void*>(p)) U(std::forward<Args>(args)...);
+        void construct(U *p, Args &&... args) {
+            new(static_cast<void *>(p)) U(std::forward<Args>(args)...);
         }
 
         void destroy(pointer p) noexcept {
