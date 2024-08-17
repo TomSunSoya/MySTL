@@ -7,8 +7,8 @@ namespace MySTL {
     template<typename T>
     class GenericIterator {
     public:
-        using iterator_category = std::random_access_iterator_tag;
-        using value_type = T;
+        using iterator_category [[maybe_unused]] = std::random_access_iterator_tag;
+        using value_type [[maybe_unused]] = T;
         using different_type = std::ptrdiff_t;
         using pointer = T *;
         using reference = T &;
