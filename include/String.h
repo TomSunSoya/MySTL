@@ -6,6 +6,7 @@
 #include "GenericIterator.h"
 
 namespace MySTL {
+    // TODO: to be refactored
     class String final {
     public:
         static constexpr size_t npos = -1;

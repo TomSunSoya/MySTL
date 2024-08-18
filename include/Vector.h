@@ -2,8 +2,9 @@
 #define VECTOR_H_
 
 #include <algorithm>
+#include <stdexcept>
 
-#include "GenericIterator.h"
+#include "ReverseIterator.h"
 
 namespace MySTL {
     template<typename T>
@@ -68,10 +69,11 @@ namespace MySTL {
 
         void swap(Vector &other) noexcept;
 
-        using iterator = GenericIterator<T>;
-        using const_interator = GenericIterator<const T>;
-        using reverse_iterator = GenericReverseIterator<T>;
-        using const_reverse_iterator = GenericReverseIterator<const T>;
+        using iterator = T *;
+        using const_interator = const T *;
+        using reverse_iterator = ReverseIterator<iterator>;
+        using const_reverse_iterator = ReverseIterator<const iterator>;
+        using iterator_category = std::random_access_iterator_tag;
 
         iterator begin();
 
@@ -381,42 +383,42 @@ namespace MySTL {
 
     template<typename T>
     typename Vector<T>::iterator Vector<T>::begin() {
-        return iterator(data);
+        return data;
     }
 
     template<typename T>
     typename Vector<T>::iterator Vector<T>::end() {
-        return iterator(data + len);
+        return data + len;
     }
 
     template<typename T>
     typename Vector<T>::const_interator Vector<T>::cbegin() {
-        return const_interator(data);
+        return data;
     }
 
     template<typename T>
     typename Vector<T>::const_interator Vector<T>::cend() {
-        return const_interator(data + len);
+        return data + len;
     }
 
     template<typename T>
     typename Vector<T>::reverse_iterator Vector<T>::rbegin() {
-        return reverse_iterator(data + len - 1);
+        return data + len - 1;
     }
 
     template<typename T>
     typename Vector<T>::reverse_iterator Vector<T>::rend() {
-        return reverse_iterator(data - 1);
+        return data - 1;
     }
 
     template<typename T>
     typename Vector<T>::const_reverse_iterator Vector<T>::crbegin() {
-        return const_reverse_iterator(data + len - 1);
+        return data + len - 1;
     }
 
     template<typename T>
     typename Vector<T>::const_reverse_iterator Vector<T>::crend() {
-        return const_reverse_iterator(data - 1);
+        return data - 1;
     }
 }  // namespace MySTL
 
