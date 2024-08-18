@@ -6,7 +6,6 @@
 #define MYSTL_QUEUE_H
 
 #include "Deque.h"
-#include "GenericIterator.h"
 
 namespace MySTL {
 
@@ -39,15 +38,6 @@ namespace MySTL {
 
         const T &back() {
             return deque.back();
-        }
-
-        using iterator = GenericIterator<T>;
-        using const_iterator = GenericIterator<const T>;
-        using reverse_iterator = GenericReverseIterator<T>;
-        using const_reverse_iterator = GenericReverseIterator<const T>;
-
-        iterator begin() {
-            return iterator(front());
         }
 
 

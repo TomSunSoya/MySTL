@@ -32,12 +32,12 @@ namespace MySTL {
 
         [[nodiscard]] size_t size() const;
 
-        void insert(const T &value, const size_t pos);
+        void insert(const T &value, size_t pos);
 
         // Erase all elements with the given value
         void erase(const T &value);
 
-        void erase(const size_t pos);
+        void erase(size_t pos);
 
         void reverse();
 
