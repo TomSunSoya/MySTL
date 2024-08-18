@@ -3,6 +3,7 @@
 
 #include <utility>
 #include <stdexcept>
+#include "GenericIterator.h"
 
 namespace MySTL {
 
@@ -37,6 +38,14 @@ namespace MySTL {
         void reverse();
         void resize(size_t sz);
 
+        using iterator = GenericIterator<T>;
+        using const_iterator = GenericIterator<const T>;
+
+        iterator begin();
+        iterator end();
+        const_iterator cbegin();
+        const_iterator cend();
+
 
     private:
         struct Node {
@@ -50,6 +59,26 @@ namespace MySTL {
         Node *head;
         size_t len;
     };
+
+    template<typename T>
+    ForwardList<T>::iterator ForwardList<T>::begin() {
+        return iterator(head);
+    }
+
+    template<typename T>
+    ForwardList<T>::iterator ForwardList<T>::end() {
+        return iterator(nullptr);
+    }
+
+    template<typename T>
+    ForwardList<T>::const_iterator ForwardList<T>::cbegin() {
+        return const_iterator(head);
+    }
+
+    template<typename T>
+    ForwardList<T>::const_iterator ForwardList<T>::cend() {
+        return const_iterator(nullptr);
+    }
 
     template<typename T>
     ForwardList<T>::ForwardList() : head(nullptr), len(0) {
