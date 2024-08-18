@@ -1,9 +1,9 @@
 #ifndef MYSTL_DEQUE_H
 #define MYSTL_DEQUE_H
 
-#include <cstring>
-#include <cstddef>
 #include <algorithm>
+#include <cstddef>
+#include <cstring>
 #include <stdexcept>
 
 namespace MySTL {
@@ -17,11 +17,12 @@ namespace MySTL {
             Block *prev;
             Block *next;
 
-            Block() : elements(new T[ELEMENTS_PER_BLOCK]), prev(nullptr), next(nullptr) {}
+            Block()
+                    : elements(new T[ELEMENTS_PER_BLOCK]),
+                      prev(nullptr),
+                      next(nullptr) {}
 
-            ~Block() {
-                delete[] elements;
-            }
+            ~Block() { delete[] elements; }
         };
 
     public:
@@ -33,10 +34,13 @@ namespace MySTL {
             using pointer = T *;
             using reference = T &;
 
-            explicit Iterator(Block **blockMap = nullptr, size_t blockIndex = 0, size_t index = 0)
+            explicit Iterator(Block **blockMap = nullptr, size_t blockIndex = 0,
+                              size_t index = 0)
                     : blockMap(blockMap), blockIndex(blockIndex), index(index) {}
 
-            reference operator*() const { return blockMap[blockIndex]->elements[index]; }
+            reference operator*() const {
+                return blockMap[blockIndex]->elements[index];
+            }
 
             pointer operator->() { return &(operator*()); }
 
@@ -80,27 +84,28 @@ namespace MySTL {
 
             Iterator operator-(difference_type n) const {
                 auto temp = *this;
-                difference_type offset = (index - n + ELEMENTS_PER_BLOCK) % ELEMENTS_PER_BLOCK;
+                difference_type offset =
+                        (index - n + ELEMENTS_PER_BLOCK) % ELEMENTS_PER_BLOCK;
                 temp.blockIndex -= offset / ELEMENTS_PER_BLOCK;
                 temp.index = offset % ELEMENTS_PER_BLOCK;
                 return temp;
             }
 
             difference_type operator-(const Iterator &other) const {
-                return (blockIndex - other.blockIndex) * ELEMENTS_PER_BLOCK + index - other.index;
+                return (blockIndex - other.blockIndex) * ELEMENTS_PER_BLOCK +
+                       index - other.index;
             }
 
             bool operator==(const Iterator &other) const {
-                return blockMap == other.blockMap && blockIndex == other.blockIndex && index == other.index;
+                return blockMap == other.blockMap &&
+                       blockIndex == other.blockIndex && index == other.index;
             }
 
             bool operator!=(const Iterator &other) const {
                 return !(*this == other);
             }
 
-            reference operator[](difference_type n) const {
-                return *(*this + n);
-            }
+            reference operator[](difference_type n) const { return *(*this + n); }
 
             Iterator &operator+=(difference_type n) {
                 *this = *this + n;
@@ -158,15 +163,14 @@ namespace MySTL {
         void pop_front();
 
         template<typename... Args>
-        void emplace_back(Args &&... args);
+        void emplace_back(Args &&...args);
 
         template<typename... Args>
-        void emplace_front(Args &&... args);
+        void emplace_front(Args &&...args);
 
         void insert(size_t index, const T &value);
 
         void erase(size_t index);
-
 
     private:
         Block **map;
@@ -190,7 +194,13 @@ namespace MySTL {
     };
 
     template<typename T>
-    Deque<T>::Deque() : map(new Block *[1]), mapSize(1), first(0), last(0), len(0), cap(ELEMENTS_PER_BLOCK) {
+    Deque<T>::Deque()
+            : map(new Block *[1]),
+              mapSize(1),
+              first(0),
+              last(0),
+              len(0),
+              cap(ELEMENTS_PER_BLOCK) {
         map[0] = new Block();
         ++mapSize;
         start = Iterator(&(map[0]->elements[ELEMENTS_PER_BLOCK / 2]));
@@ -231,16 +241,19 @@ namespace MySTL {
 
     template<typename T>
     void Deque<T>::erase(size_t index) {
-        if (index >= size())
-            throw std::out_of_range("Index is out of bounds.");
+        if (index >= size()) throw std::out_of_range("Index is out of bounds.");
 
         size_t blockIndex = index / ELEMENTS_PER_BLOCK;
         size_t inBlockIndex = index % ELEMENTS_PER_BLOCK;
 
-        std::copy(map[blockIndex]->elements + inBlockIndex + 1, map[blockIndex]->elements + ELEMENTS_PER_BLOCK, map[blockIndex]->elements + inBlockIndex);
+        std::copy(map[blockIndex]->elements + inBlockIndex + 1,
+                  map[blockIndex]->elements + ELEMENTS_PER_BLOCK,
+                  map[blockIndex]->elements + inBlockIndex);
         for (size_t i = blockIndex; i < last; ++i) {
             map[i]->elements[ELEMENTS_PER_BLOCK - 1] = map[i + 1]->elements[0];
-            std::copy(map[i + 1]->elements + 1, map[i + 1]->elements + ELEMENTS_PER_BLOCK, map[i + 1]->elements);
+            std::copy(map[i + 1]->elements + 1,
+                      map[i + 1]->elements + ELEMENTS_PER_BLOCK,
+                      map[i + 1]->elements);
         }
 
         --lastIndex;
@@ -255,8 +268,7 @@ namespace MySTL {
 
     template<typename T>
     void Deque<T>::insert(size_t index, const T &value) {
-        if (index > size())
-            throw std::out_of_range("Index is out of bounds.");
+        if (index > size()) throw std::out_of_range("Index is out of bounds.");
 
         auto blockIndex = index / ELEMENTS_PER_BLOCK;
         auto inBlockIndex = index % ELEMENTS_PER_BLOCK;
@@ -269,10 +281,14 @@ namespace MySTL {
         }
 
         for (size_t i = last; i > blockIndex; --i) {
-            map[i]->elements[0] = map[i-1]->elements[ELEMENTS_PER_BLOCK - 1];
-            std::copy_backward(map[i-1]->elements, map[i-1]->elements + ELEMENTS_PER_BLOCK - 1, map[i-1]->elements + ELEMENTS_PER_BLOCK);
+            map[i]->elements[0] = map[i - 1]->elements[ELEMENTS_PER_BLOCK - 1];
+            std::copy_backward(map[i - 1]->elements,
+                               map[i - 1]->elements + ELEMENTS_PER_BLOCK - 1,
+                               map[i - 1]->elements + ELEMENTS_PER_BLOCK);
         }
-        std::copy_backward(map[blockIndex]->elements + inBlockIndex, map[blockIndex]->elements + lastIndex, map[blockIndex]->elements + lastIndex + 1);
+        std::copy_backward(map[blockIndex]->elements + inBlockIndex,
+                           map[blockIndex]->elements + lastIndex,
+                           map[blockIndex]->elements + lastIndex + 1);
         map[blockIndex]->elements[inBlockIndex] = value;
         ++lastIndex;
         ++finish;
@@ -281,10 +297,11 @@ namespace MySTL {
 
     template<typename T>
     template<typename... Args>
-    void Deque<T>::emplace_front(Args &&... args) {
+    void Deque<T>::emplace_front(Args &&...args) {
         if (firstIndex > 0) {
             --firstIndex;
-            std::copy_backward(map[first]->elements + firstIndex, map[first]->elements + ELEMENTS_PER_BLOCK - 1,
+            std::copy_backward(map[first]->elements + firstIndex,
+                               map[first]->elements + ELEMENTS_PER_BLOCK - 1,
                                map[first]->elements + ELEMENTS_PER_BLOCK);
         } else {
             if (first == 0) {
@@ -306,7 +323,7 @@ namespace MySTL {
 
     template<typename T>
     template<typename... Args>
-    void Deque<T>::emplace_back(Args &&... args) {
+    void Deque<T>::emplace_back(Args &&...args) {
         if (lastIndex == ELEMENTS_PER_BLOCK - 1) {
             if (last + 1 >= mapSize) {
                 auto newMapSize = mapSize * 2;
@@ -367,7 +384,8 @@ namespace MySTL {
     void Deque<T>::push_front(const T &value) {
         if (firstIndex > 0) {
             --firstIndex;
-            std::copy_backward(map[first]->elements + firstIndex, map[first]->elements + ELEMENTS_PER_BLOCK - 1,
+            std::copy_backward(map[first]->elements + firstIndex,
+                               map[first]->elements + ELEMENTS_PER_BLOCK - 1,
                                map[first]->elements + ELEMENTS_PER_BLOCK);
         } else {
             if (first == 0) {
@@ -402,7 +420,8 @@ namespace MySTL {
                 ++last;
             }
             lastIndex = 0;
-        } else ++lastIndex;
+        } else
+            ++lastIndex;
         map[last]->elements[lastIndex] = value;
         finish = Iterator(&(map[last]->elements[lastIndex]));
         ++len;
@@ -430,12 +449,14 @@ namespace MySTL {
 
     template<typename T>
     const T &Deque<T>::at(size_t index) const {
-        return map[first + index / ELEMENTS_PER_BLOCK]->elements[index % ELEMENTS_PER_BLOCK];
+        return map[first + index / ELEMENTS_PER_BLOCK]
+                ->elements[index % ELEMENTS_PER_BLOCK];
     }
 
     template<typename T>
     T &Deque<T>::at(size_t index) {
-        return map[first + index / ELEMENTS_PER_BLOCK]->elements[index % ELEMENTS_PER_BLOCK];
+        return map[first + index / ELEMENTS_PER_BLOCK]
+                ->elements[index % ELEMENTS_PER_BLOCK];
     }
 
     template<typename T>
@@ -485,8 +506,7 @@ namespace MySTL {
     template<typename T>
     Deque<T> &Deque<T>::operator=(Deque<T> &&other) noexcept {
         if (this != &other) {
-            for (size_t i = 0; i < mapSize; ++i)
-                delete[] map[i];
+            for (size_t i = 0; i < mapSize; ++i) delete[] map[i];
             delete[] map;
 
             map = other.map;
@@ -513,15 +533,16 @@ namespace MySTL {
     template<typename T>
     Deque<T> &Deque<T>::operator=(const Deque<T> &other) {
         if (this != &other) {
-            for (size_t i = 0; i < mapSize; ++i)
-                delete[] map[i];
+            for (size_t i = 0; i < mapSize; ++i) delete[] map[i];
             delete[] map;
 
             mapSize = other.mapSize;
             map = new Block *[mapSize];
             for (size_t i = 0; i < mapSize; ++i) {
                 map[i] = new Block();
-                std::copy(other.map[i]->elements, other.map[i]->elements + ELEMENTS_PER_BLOCK, map[i]->elements);
+                std::copy(other.map[i]->elements,
+                          other.map[i]->elements + ELEMENTS_PER_BLOCK,
+                          map[i]->elements);
             }
 
             first = other.first;
@@ -562,7 +583,9 @@ namespace MySTL {
         map = new Block *[mapSize];
         for (size_t i = 0; i < mapSize; ++i) {
             map[i] = new Block();
-            std::copy(other.map[i]->elements, other.map[i]->elements + ELEMENTS_PER_BLOCK, map[i]->elements);
+            std::copy(other.map[i]->elements,
+                      other.map[i]->elements + ELEMENTS_PER_BLOCK,
+                      map[i]->elements);
         }
 
         first = other.first;
@@ -573,7 +596,6 @@ namespace MySTL {
         start = Iterator(&(map[first]->elements[firstIndex]));
         finish = Iterator(&(map[last]->elements[lastIndex]));
     }
-}
+}  // namespace MySTL
 
-
-#endif //MYSTL_DEQUE_H
+#endif  // MYSTL_DEQUE_H

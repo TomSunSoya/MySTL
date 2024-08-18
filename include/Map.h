@@ -6,58 +6,78 @@
 
 namespace MySTL {
     enum Color {
-        RED,
-        BLACK
+        RED, BLACK
     };
 
-    template <typename K, typename V>
+    template<typename K, typename V>
     struct RBTreeNode {
         K key;
         V value;
         Color color;
-        RBTreeNode* left;
-        RBTreeNode* right;
-        RBTreeNode* parent;
+        RBTreeNode *left;
+        RBTreeNode *right;
+        RBTreeNode *parent;
 
-        RBTreeNode(K key, V value) : key(key), value(value), color(RED), left(nullptr), right(nullptr), parent(nullptr) {}
+        RBTreeNode(K key, V value)
+                : key(key),
+                  value(value),
+                  color(RED),
+                  left(nullptr),
+                  right(nullptr),
+                  parent(nullptr) {}
     };
 
-    template <typename K, typename V, typename Compare = std::less<K>>
+    template<typename K, typename V, typename Compare = std::less<K> >
     class Map {
     public:
         Map();
+
         ~Map() = default;
 
         [[nodiscard]] bool empty() const;
+
         [[nodiscard]] size_t size() const;
 
-        V* find(const K& key);
-        void insert(const K& key, const V& value);
-        void erase(const K& key);
+        V *find(const K &key);
+
+        void insert(const K &key, const V &value);
+
+        void erase(const K &key);
+
         void clear();
-        bool contains(const K& key) const;
+
+        bool contains(const K &key) const;
 
     private:
-        RBTreeNode<K, V>* root;
+        RBTreeNode<K, V> *root;
         size_t len;
         Compare cmp;
 
-        void leftRotate(RBTreeNode<K, V>* x);
-        void rightRotate(RBTreeNode<K, V>* x);
-        void insertFixup(RBTreeNode<K, V>* z);
-        void transplant(RBTreeNode<K, V>* u, RBTreeNode<K, V>* v);
-        void deleteFixup(RBTreeNode<K, V>* x);
-        RBTreeNode<K, V>* minimum(RBTreeNode<K, V>* x);
-        RBTreeNode<K, V>* maximum(RBTreeNode<K, V>* x);
-        RBTreeNode<K, V>* findNode(K key);
-        void clearNode(RBTreeNode<K, V>* x);
-        void insertNode(RBTreeNode<K, V>* z);
-        void deleteNode(RBTreeNode<K, V>* z);
+        void leftRotate(RBTreeNode<K, V> *x);
+
+        void rightRotate(RBTreeNode<K, V> *x);
+
+        void insertFixup(RBTreeNode<K, V> *z);
+
+        void transplant(RBTreeNode<K, V> *u, RBTreeNode<K, V> *v);
+
+        void deleteFixup(RBTreeNode<K, V> *x);
+
+        RBTreeNode<K, V> *minimum(RBTreeNode<K, V> *x);
+
+        RBTreeNode<K, V> *maximum(RBTreeNode<K, V> *x);
+
+        RBTreeNode<K, V> *findNode(K key);
+
+        void clearNode(RBTreeNode<K, V> *x);
+
+        void insertNode(RBTreeNode<K, V> *z);
+
+        void deleteNode(RBTreeNode<K, V> *z);
     };
 
     template<typename K, typename V, typename Compare>
-    Map<K, V, Compare>::Map() : root(nullptr), len(0), cmp(Compare()) {
-    }
+    Map<K, V, Compare>::Map() : root(nullptr), len(0), cmp(Compare()) {}
 
     template<typename K, typename V, typename Compare>
     bool Map<K, V, Compare>::empty() const {
@@ -72,8 +92,7 @@ namespace MySTL {
     template<typename K, typename V, typename Compare>
     V *Map<K, V, Compare>::find(const K &key) {
         auto x = findNode(key);
-        if (x != nullptr)
-            return &x->value;
+        if (x != nullptr) return &x->value;
         return nullptr;
     }
 
@@ -87,8 +106,7 @@ namespace MySTL {
     template<typename K, typename V, typename Compare>
     void Map<K, V, Compare>::erase(const K &key) {
         auto node = findNode(key);
-        if (node == nullptr)
-            return;
+        if (node == nullptr) return;
         deleteNode(node);
         --len;
     }
@@ -110,8 +128,7 @@ namespace MySTL {
         auto y = x->right;
         x->right = y->left;
 
-        if (y->left != nullptr)
-            y->left->parent = x;
+        if (y->left != nullptr) y->left->parent = x;
         y->parent = x->parent;
 
         if (x->parent == nullptr)
@@ -120,7 +137,6 @@ namespace MySTL {
             x->parent->left = y;
         else
             x->parent->right = y;
-
     }
 
     template<typename K, typename V, typename Compare>
@@ -128,8 +144,7 @@ namespace MySTL {
         auto y = x->left;
         x->left = y->right;
 
-        if (y->right != nullptr)
-            y->right->parent = x;
+        if (y->right != nullptr) y->right->parent = x;
         y->parent = x->parent;
 
         if (x->parent == nullptr)
@@ -192,8 +207,7 @@ namespace MySTL {
         else
             u->parent->right = v;
 
-        if (v != nullptr)
-            v->parent = u->parent;
+        if (v != nullptr) v->parent = u->parent;
     }
 
     template<typename K, typename V, typename Compare>
@@ -207,7 +221,8 @@ namespace MySTL {
                     leftRotate(x->parent);
                     w = x->parent->right;
                 }
-                if ((w->left == nullptr || w->left->color == BLACK) && (w->right == nullptr || w->right->color == BLACK)) {
+                if ((w->left == nullptr || w->left->color == BLACK) &&
+                    (w->right == nullptr || w->right->color == BLACK)) {
                     w->color = RED;
                     x = x->parent;
                 } else {
@@ -217,11 +232,9 @@ namespace MySTL {
                         rightRotate(w);
                         w = x->parent->right;
                     }
-                    if (w != nullptr)
-                        w->color = x->parent->color;
+                    if (w != nullptr) w->color = x->parent->color;
                     x->parent->color = BLACK;
-                    if (w->right != nullptr)
-                        w->right->color = BLACK;
+                    if (w->right != nullptr) w->right->color = BLACK;
                     leftRotate(x->parent);
                     x = root;
                 }
@@ -233,7 +246,8 @@ namespace MySTL {
                     rightRotate(x->parent);
                     w = x->parent->left;
                 }
-                if ((w->right == nullptr || w->right->color == BLACK) && (w->left == nullptr || w->left->color == BLACK)) {
+                if ((w->right == nullptr || w->right->color == BLACK) &&
+                    (w->left == nullptr || w->left->color == BLACK)) {
                     w->color = RED;
                     x = x->parent;
                 } else {
@@ -243,31 +257,26 @@ namespace MySTL {
                         leftRotate(w);
                         w = x->parent->left;
                     }
-                    if (w != nullptr)
-                        w->color = x->parent->color;
+                    if (w != nullptr) w->color = x->parent->color;
                     x->parent->color = BLACK;
-                    if (w->left != nullptr)
-                        w->left->color = BLACK;
+                    if (w->left != nullptr) w->left->color = BLACK;
                     rightRotate(x->parent);
                     x = root;
                 }
             }
         }
-        if (x != nullptr)
-            x->color = BLACK;
+        if (x != nullptr) x->color = BLACK;
     }
 
     template<typename K, typename V, typename Compare>
     RBTreeNode<K, V> *Map<K, V, Compare>::minimum(RBTreeNode<K, V> *x) {
-        while (x->left != nullptr)
-            x = x->left;
+        while (x->left != nullptr) x = x->left;
         return x;
     }
 
     template<typename K, typename V, typename Compare>
     RBTreeNode<K, V> *Map<K, V, Compare>::maximum(RBTreeNode<K, V> *x) {
-        while (x->right != nullptr)
-            x = x->right;
+        while (x->right != nullptr) x = x->right;
         return x;
     }
 
@@ -296,7 +305,7 @@ namespace MySTL {
 
     template<typename K, typename V, typename Compare>
     void Map<K, V, Compare>::insertNode(RBTreeNode<K, V> *z) {
-        RBTreeNode<K, V>* y = nullptr;
+        RBTreeNode<K, V> *y = nullptr;
         auto x = root;
         while (x != nullptr) {
             y = x;
@@ -322,7 +331,7 @@ namespace MySTL {
     void Map<K, V, Compare>::deleteNode(RBTreeNode<K, V> *z) {
         auto y = z;
         auto yOriginalColor = y->color;
-        RBTreeNode<K, V>* x;
+        RBTreeNode<K, V> *x;
         if (z->left == nullptr) {
             x = z->right;
             transplant(z, z->right);
@@ -345,11 +354,9 @@ namespace MySTL {
             y->left->parent = y;
             y->color = z->color;
         }
-        if (yOriginalColor == BLACK)
-            deleteFixup(x);
+        if (yOriginalColor == BLACK) deleteFixup(x);
         delete z;
     }
-}
+}  // namespace MySTL
 
-
-#endif //MYSTL_MAP_H
+#endif  // MYSTL_MAP_H

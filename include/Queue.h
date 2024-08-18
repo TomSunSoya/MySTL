@@ -16,36 +16,22 @@ namespace MySTL {
 
         ~Queue() = default;
 
-        void push(const T &value) {
-            deque.push_back(value);
-        }
+        void push(const T &value) { deque.push_back(value); }
 
-        void pop() {
-            deque.pop_front();
-        }
+        void pop() { deque.pop_front(); }
 
-        [[nodiscard]] bool empty() const {
-            return deque.empty();
-        }
+        [[nodiscard]] bool empty() const { return deque.empty(); }
 
-        [[nodiscard]] size_t size() const {
-            return deque.size();
-        }
+        [[nodiscard]] size_t size() const { return deque.size(); }
 
-        const T &front() {
-            return deque.front();
-        }
+        const T &front() { return deque.front(); }
 
-        const T &back() {
-            return deque.back();
-        }
-
+        const T &back() { return deque.back(); }
 
     private:
         Deque<T> deque;
     };
 
-}
+}  // namespace MySTL
 
-
-#endif //MYSTL_QUEUE_H
+#endif  // MYSTL_QUEUE_H

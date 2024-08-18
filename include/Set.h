@@ -4,33 +4,26 @@
 #include "Map.h"
 
 namespace MySTL {
-
-    template <typename T, typename Compare = std::less<T>>
+    template<typename T, typename Compare = std::less<T> >
     class Set {
     public:
-        explicit Set(const Compare& comp = Compare()) : map(comp), len(0) {}
+        explicit Set(const Compare &comp = Compare()) : map(comp), len(0) {}
 
-        [[nodiscard]] bool empty() const {
-            return len == 0;
-        }
+        [[nodiscard]] bool empty() const { return len == 0; }
 
-        [[nodiscard]] size_t size() const {
-            return len;
-        }
+        [[nodiscard]] size_t size() const { return len; }
 
-        void insert(const T& t) {
+        void insert(const T &t) {
             map.insert(t, true);
             ++len;
         }
 
-        void erase(const T& t) {
+        void erase(const T &t) {
             map.erase(t);
             --len;
         }
 
-        bool contains(const T& t) const {
-            return map.contains(t);
-        }
+        bool contains(const T &t) const { return map.contains(t); }
 
         void clear() {
             map.clear();
@@ -43,7 +36,6 @@ namespace MySTL {
         size_t len;
     };
 
-}
+}  // namespace MySTL
 
-
-#endif //MYSTL_SET_H
+#endif  // MYSTL_SET_H

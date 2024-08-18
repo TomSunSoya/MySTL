@@ -4,17 +4,25 @@
 #include "HashMap.h"
 
 namespace MySTL {
-    template <typename T, typename Hash = std::hash<T>, typename Equal = std::equal_to<T>>
+    template<typename T, typename Hash = std::hash<T>,
+            typename Equal = std::equal_to<T> >
     class HashSet {
     public:
-        explicit HashSet(const size_t& initialCap = 16, const double& loadFactor = 0.75);
+        explicit HashSet(const size_t &initialCap = 16,
+                         const double &loadFactor = 0.75);
+
         ~HashSet() = default;
 
         [[nodiscard]] bool empty() const;
+
         [[nodiscard]] size_t size() const;
-        void insert(const T& t);
-        void erase(const T& t);
-        bool contains(const T& t) const;
+
+        void insert(const T &t);
+
+        void erase(const T &t);
+
+        bool contains(const T &t) const;
+
         void clear();
 
     private:
@@ -22,9 +30,9 @@ namespace MySTL {
     };
 
     template<typename T, typename Hash, typename Equal>
-    HashSet<T, Hash, Equal>::HashSet(const size_t &initialCap, const double &loadFactor) : hashMap(initialCap, loadFactor) {
-
-    }
+    HashSet<T, Hash, Equal>::HashSet(const size_t &initialCap,
+                                     const double &loadFactor)
+            : hashMap(initialCap, loadFactor) {}
 
     template<typename T, typename Hash, typename Equal>
     bool HashSet<T, Hash, Equal>::empty() const {
@@ -56,7 +64,6 @@ namespace MySTL {
         hashMap.clear();
     }
 
-}
+}  // namespace MySTL
 
-
-#endif //MYSTL_HASHSET_H
+#endif  // MYSTL_HASHSET_H

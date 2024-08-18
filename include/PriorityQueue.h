@@ -1,30 +1,37 @@
 #ifndef MYSTL_PRIORITYQUEUE_H
 #define MYSTL_PRIORITYQUEUE_H
 
-#include <functional>
 #include <algorithm>
+#include <functional>
 
 #include "Vector.h"
 
 namespace MySTL {
 
-    template <typename T, typename Container = Vector<T>, typename Compare = std::less<T>>
+    template<typename T, typename Container = Vector<T>,
+            typename Compare = std::less<T> >
     class PriorityQueue {
     public:
-        explicit PriorityQueue(const Compare& comp = Compare(), const Container& cont = Container());
+        explicit PriorityQueue(const Compare &comp = Compare(),
+                               const Container &cont = Container());
+
         ~PriorityQueue() = default;
 
         [[nodiscard]] bool empty() const;
+
         [[nodiscard]] size_t size() const;
 
-        const T& top() const;
-        void push(const T& value);
+        const T &top() const;
+
+        void push(const T &value);
+
         void pop();
 
         template<typename... Args>
-        void emplace(Args&&... args);
+        void emplace(Args &&...args);
 
         void clear();
+
         Compare get_compare();
 
     private:
@@ -61,7 +68,7 @@ namespace MySTL {
 
     template<typename T, typename Container, typename Compare>
     template<typename... Args>
-    void PriorityQueue<T, Container, Compare>::emplace(Args &&... args) {
+    void PriorityQueue<T, Container, Compare>::emplace(Args &&...args) {
         container.emplace_back(std::forward<Args>(args)...);
         std::push_heap(container.begin(), container.end(), cmp);
     }
@@ -77,11 +84,11 @@ namespace MySTL {
     }
 
     template<typename T, typename Container, typename Compare>
-    PriorityQueue<T, Container, Compare>::PriorityQueue(const Compare &comp, const Container &cont) :
-            container(cont), cmp(comp) {
+    PriorityQueue<T, Container, Compare>::PriorityQueue(const Compare &comp,
+                                                        const Container &cont)
+            : container(cont), cmp(comp) {
         std::make_heap(container.begin(), container.end(), cmp);
     }
-}
+}  // namespace MySTL
 
-
-#endif //MYSTL_PRIORITYQUEUE_H
+#endif  // MYSTL_PRIORITYQUEUE_H

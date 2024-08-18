@@ -13,16 +13,11 @@ namespace MySTL {
         using pointer = T *;
         using reference = T &;
 
-        explicit GenericIterator(pointer ptr = nullptr) : m_ptr(ptr) {
-        }
+        explicit GenericIterator(pointer ptr = nullptr) : m_ptr(ptr) {}
 
-        reference operator*() const {
-            return *m_ptr;
-        }
+        reference operator*() const { return *m_ptr; }
 
-        reference operator->() {
-            return m_ptr;
-        }
+        reference operator->() { return m_ptr; }
 
         GenericIterator &operator++() {
             ++m_ptr;
@@ -58,7 +53,6 @@ namespace MySTL {
             return m_ptr - other.m_ptr;
         }
 
-
         bool operator==(const GenericIterator &other) const;
 
         bool operator!=(const GenericIterator &other) const;
@@ -71,14 +65,11 @@ namespace MySTL {
 
         bool operator>=(const GenericIterator &) const;
 
-        reference operator[](different_type n) const {
-            return *(m_ptr + n);
-        }
+        reference operator[](different_type n) const { return *(m_ptr + n); }
 
     private:
         pointer m_ptr;
     };
-
 
     template<typename T>
     class GenericReverseIterator {
@@ -90,8 +81,7 @@ namespace MySTL {
         using reference = T &;
 
         // 构造函数
-        explicit GenericReverseIterator(pointer ptr = nullptr) : m_ptr(ptr) {
-        }
+        explicit GenericReverseIterator(pointer ptr = nullptr) : m_ptr(ptr) {}
 
         // 解引用操作符
         reference operator*() const { return *m_ptr; }
@@ -102,7 +92,7 @@ namespace MySTL {
         GenericReverseIterator &operator++() {
             --m_ptr;
             return *this;
-        } // 反向迭代器的自增是指针的自减
+        }  // 反向迭代器的自增是指针的自减
         GenericReverseIterator operator++(int) {
             GenericReverseIterator temp = *this;
             --m_ptr;
@@ -113,7 +103,7 @@ namespace MySTL {
         GenericReverseIterator &operator--() {
             ++m_ptr;
             return *this;
-        } // 反向迭代器的自减是指针的自增
+        }  // 反向迭代器的自减是指针的自增
         GenericReverseIterator operator--(int) {
             GenericReverseIterator temp = *this;
             ++m_ptr;
@@ -121,14 +111,18 @@ namespace MySTL {
         }
 
         // 迭代器比较
-        bool operator==(const GenericReverseIterator &other) const { return m_ptr == other.m_ptr; }
+        bool operator==(const GenericReverseIterator &other) const {
+            return m_ptr == other.m_ptr;
+        }
 
-        bool operator!=(const GenericReverseIterator &other) const { return m_ptr != other.m_ptr; }
+        bool operator!=(const GenericReverseIterator &other) const {
+            return m_ptr != other.m_ptr;
+        }
 
     private:
         pointer m_ptr;
     };
-}
+}  // namespace MySTL
 
 namespace MySTL {
     template<typename T>
@@ -160,7 +154,6 @@ namespace MySTL {
     bool GenericIterator<T>::operator<=(const GenericIterator &other) const {
         return m_ptr <= other.m_ptr;
     }
-}
+}  // namespace MySTL
 
-
-#endif //GENERICITERATOR_H
+#endif  // GENERICITERATOR_H

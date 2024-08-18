@@ -1,12 +1,11 @@
 #include "../include/String.h"
+
 #include <algorithm>
 #include <cstring>
 #include <stdexcept>
 
 namespace MySTL {
-    String::String() : data(new char[1]), cap(1) {
-        data[0] = 0;
-    }
+    String::String() : data(new char[1]), cap(1) { data[0] = 0; }
 
     String::String(const char *str) {
         len = strlen(str);
@@ -16,11 +15,13 @@ namespace MySTL {
         data[len] = '\0';
     }
 
-    String::String(const String &other) : data(new char[other.cap]), len(other.len), cap(other.cap) {
+    String::String(const String &other)
+            : data(new char[other.cap]), len(other.len), cap(other.cap) {
         memcpy(data, other.data, len + 1);
     }
 
-    String::String(String &&other) noexcept: data(other.data), len(other.len), cap(other.cap) {
+    String::String(String &&other) noexcept
+            : data(other.data), len(other.len), cap(other.cap) {
         other.data = nullptr;
         other.len = 0;
         other.cap = 0;
@@ -51,9 +52,7 @@ namespace MySTL {
         return *this;
     }
 
-    String::~String() {
-        delete[] data;
-    }
+    String::~String() { delete[] data; }
 
     String String::operator+(const String &other) const {
         String result = *this;
@@ -61,29 +60,21 @@ namespace MySTL {
         return result;
     }
 
-
     String String::operator+(const char *str) const {
         String result = *this;
         result.append(str);
         return result;
     }
 
-    String &String::operator+=(const String &other) {
-        return append(other);
-    }
+    String &String::operator+=(const String &other) { return append(other); }
 
-
-    String &String::operator+=(const char *str) {
-        return append(str);
-    }
+    String &String::operator+=(const char *str) { return append(str); }
 
     bool String::operator==(const String &other) const {
         return this->compare(other) == 0;
     }
 
-    bool String::operator!=(const String &other) const {
-        return !(*this == other);
-    }
+    bool String::operator!=(const String &other) const { return !(*this == other); }
 
     bool String::operator<(const String &other) const {
         return this->compare(other) < 0;
@@ -101,32 +92,24 @@ namespace MySTL {
         return *this > other || *this == other;
     }
 
-    const char *String::c_str() const {
-        return data;
-    }
+    const char *String::c_str() const { return data; }
 
     void String::reserve(size_t sz) {
         auto new_data = new char[sz];
-        if (data)
-            memcpy(new_data, data, len + 1);
+        if (data) memcpy(new_data, data, len + 1);
         delete[] data;
         data = new_data;
         cap = sz;
     }
-
 
     bool String::empty() const {
         if (data == nullptr || data[0] == '\0') return true;
         return len == 0;
     }
 
-    size_t String::size() const {
-        return length();
-    }
+    size_t String::size() const { return length(); }
 
-    size_t String::capacity() const {
-        return cap;
-    }
+    size_t String::capacity() const { return cap; }
 
     size_t String::length() const {
         size_t count = 0;
@@ -148,20 +131,17 @@ namespace MySTL {
 
     String &String::append(const String &other) {
         size_t new_len = len + other.len;
-        if (new_len >= cap)
-            reserve(new_len * 2);
+        if (new_len >= cap) reserve(new_len * 2);
         memcpy(data + len, other.data, other.len);
         len = new_len;
         data[len] = '\0';
         return *this;
     }
 
-
     String &String::append(const char *str) {
         if (str == nullptr) return *this;
         size_t new_len = len + strlen(str);
-        if (new_len >= cap)
-            reserve(new_len * 2);
+        if (new_len >= cap) reserve(new_len * 2);
         memcpy(data + len, str, strlen(str));
         len = new_len;
         data[len] = '\0';
@@ -200,8 +180,7 @@ namespace MySTL {
         size_t chars_count = 0;
         while (byte_pos < len && chars_count < pos) {
             if ((data[byte_pos] & 0xC0) != 0x80) ++chars_count;
-            if (chars_count <= pos)
-                ++byte_pos;
+            if (chars_count <= pos) ++byte_pos;
         }
 
         for (size_t i = byte_pos; i < len; ++i) {
@@ -210,8 +189,10 @@ namespace MySTL {
             size_t j = 0, substr_byte = 0;
             bool match = true;
             while (i + j < len && substr_byte < substr.len) {
-                // check current byte is the start of a character with same index
-                if ((data[i + j] & 0xC0) == 0x80 || (substr.data[substr_byte] & 0xC0) == 0x80) {
+                // check current byte is the start of a character with same
+                // index
+                if ((data[i + j] & 0xC0) == 0x80 ||
+                    (substr.data[substr_byte] & 0xC0) == 0x80) {
                     if (data[i + j] != substr.data[substr_byte]) {
                         match = false;
                         break;
@@ -219,7 +200,8 @@ namespace MySTL {
                     ++j;
                     ++substr_byte;
                 } else {
-                    if (substr_byte >= substr.len || data[i + j] != substr.data[substr_byte]) {
+                    if (substr_byte >= substr.len ||
+                        data[i + j] != substr.data[substr_byte]) {
                         match = false;
                         break;
                     }
@@ -227,9 +209,10 @@ namespace MySTL {
                     ++substr_byte;
                 }
             }
-            if (match && substr_byte == substr.len) return chars_count; // return the index of character instead of byte
-            if ((data[i] & 0xC0) != 0x80)
-                ++chars_count;
+            if (match && substr_byte == substr.len)
+                return chars_count;  // return the index of character instead of
+            // byte
+            if ((data[i] & 0xC0) != 0x80) ++chars_count;
         }
         return npos;
     }
@@ -249,7 +232,8 @@ namespace MySTL {
         int numBytes = 0;
 
         // 检测首字节并确定 UTF-8 字符的字节数
-        if (const auto firstByte = static_cast<unsigned char>(bytes[0]); (firstByte & 0x80) == 0x00) {  // 0xxxxxxx
+        if (const auto firstByte = static_cast<unsigned char>(bytes[0]);
+                (firstByte & 0x80) == 0x00) {  // 0xxxxxxx
             codepoint = firstByte;
             numBytes = 1;
         } else if ((firstByte & 0xE0) == 0xC0) {  // 110xxxxx
@@ -283,7 +267,7 @@ namespace MySTL {
         if ((first_byte & 0xE0) == 0xC0) return 2;
         if ((first_byte & 0xF0) == 0xE0) return 3;
         if ((first_byte & 0xF8) == 0xF0) return 4;
-        return 0; // 非法的 UTF-8 编码
+        return 0;  // 非法的 UTF-8 编码
     }
 
     void String::encodeUtf8Char(char *dest, const char32_t codepoint) {
@@ -304,10 +288,7 @@ namespace MySTL {
         }
     }
 
-    char32_t String::operator[](const size_t index) const {
-        return at(index);
-    }
-
+    char32_t String::operator[](const size_t index) const { return at(index); }
 
     char32_t String::at(const size_t pos) const {
         size_t byte_index = 0, char_index = 0;
@@ -317,8 +298,7 @@ namespace MySTL {
             ++char_index;
         }
 
-        if (byte_index < len)
-            return decodeUtf8Char(&data[byte_index]);
+        if (byte_index < len) return decodeUtf8Char(&data[byte_index]);
         throw std::out_of_range("Index out of range");
     }
 
@@ -353,8 +333,7 @@ namespace MySTL {
     void String::pop_back() {
         if (len == 0) return;
         size_t pos = len - 1;
-        while (pos > 0 && (data[pos] & 0xC0) == 0x80)
-            --pos;
+        while (pos > 0 && (data[pos] & 0xC0) == 0x80) --pos;
         data[pos] = '\0';
         len = pos;
     }
@@ -367,8 +346,7 @@ namespace MySTL {
     char32_t String::back() const {
         if (len == 0) throw std::out_of_range("Empty string");
         size_t pos = len - 1;
-        while (pos > 0 && (data[pos] & 0xC0) == 0x80)
-            --pos;
+        while (pos > 0 && (data[pos] & 0xC0) == 0x80) --pos;
 
         return decodeUtf8Char(data + pos);
     }
@@ -379,14 +357,16 @@ namespace MySTL {
                 if (*(format + 1) == '%')
                     ++format;
                 else
-                    throw std::runtime_error("Invalid format string: missing arguments");
+                    throw std::runtime_error(
+                            "Invalid format string: missing arguments");
             }
             stream << *format++;
         }
     }
 
     template<typename T, typename... Args>
-    void String::formatHelper(std::ostringstream &stream, const char *format, T value, Args... args) {
+    void String::formatHelper(std::ostringstream &stream, const char *format,
+                              T value, Args... args) {
         while (*format) {
             if (*format == '%') {
                 if (*(format + 1) == '%') {
@@ -412,5 +392,4 @@ namespace MySTL {
         return String(stream.str().c_str());
     }
 
-
-}
+}  // namespace MySTL

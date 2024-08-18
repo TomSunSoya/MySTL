@@ -1,8 +1,9 @@
 #ifndef MYSTL_FORWARDLIST_H
 #define MYSTL_FORWARDLIST_H
 
-#include <utility>
 #include <stdexcept>
+#include <utility>
+
 #include "GenericIterator.h"
 
 namespace MySTL {
@@ -11,41 +12,58 @@ namespace MySTL {
     class ForwardList {
     public:
         ForwardList();
+
         ~ForwardList();
 
         ForwardList(const ForwardList &other);
+
         ForwardList &operator=(const ForwardList &other);
+
         ForwardList(ForwardList &&other) noexcept;
+
         ForwardList &operator=(ForwardList &&other) noexcept;
+
         ForwardList(std::initializer_list<T> list);
 
         bool empty();
+
         size_t size();
+
         void clear();
 
-        T& front();
-        T& back();
+        T &front();
+
+        T &back();
+
         void push_front(const T &value);
+
         void push_front(T &&value);
+
         void pop_front();
+
         void insert_after(const T &value, size_t pos);
+
         void insert_after(T &&value, size_t pos);
 
         template<typename... Args>
         void emplace_after(size_t pos, Args... args);
 
         void erase_after(size_t pos);
+
         void reverse();
+
         void resize(size_t sz);
 
         using iterator = GenericIterator<T>;
         using const_iterator = GenericIterator<const T>;
 
         iterator begin();
-        iterator end();
-        const_iterator cbegin();
-        const_iterator cend();
 
+        iterator end();
+
+        const_iterator cbegin();
+
+        const_iterator cend();
 
     private:
         struct Node {
@@ -53,7 +71,8 @@ namespace MySTL {
             Node *next;
 
             explicit Node(const T &d = T(), Node *n = nullptr) : data(d), next(n) {}
-            explicit Node(T&& d, Node *n = nullptr) : data(std::move(d)), next(n) {}
+
+            explicit Node(T &&d, Node *n = nullptr) : data(std::move(d)), next(n) {}
         };
 
         Node *head;
@@ -81,9 +100,7 @@ namespace MySTL {
     }
 
     template<typename T>
-    ForwardList<T>::ForwardList() : head(nullptr), len(0) {
-
-    }
+    ForwardList<T>::ForwardList() : head(nullptr), len(0) {}
 
     template<typename T>
     ForwardList<T>::~ForwardList() {
@@ -95,7 +112,7 @@ namespace MySTL {
         clear();
         auto p = other.head;
         auto q = head;
-        Node* pre = nullptr;
+        Node *pre = nullptr;
         while (q) {
             q = new Node(p->data);
             if (head == nullptr)
@@ -110,12 +127,11 @@ namespace MySTL {
 
     template<typename T>
     ForwardList<T> &ForwardList<T>::operator=(const ForwardList &other) {
-        if (this == &other)
-            return *this;
+        if (this == &other) return *this;
         clear();
         auto p = other.head;
         auto q = head;
-        Node* pre = nullptr;
+        Node *pre = nullptr;
         while (q) {
             q = new Node(p->data);
             if (head == nullptr)
@@ -131,8 +147,7 @@ namespace MySTL {
 
     template<typename T>
     ForwardList<T>::ForwardList(ForwardList &&other) noexcept {
-        if (this == &other)
-            return *this;
+        if (this == &other) return *this;
         clear();
         head = other.head;
         len = other.len;
@@ -143,8 +158,7 @@ namespace MySTL {
 
     template<typename T>
     ForwardList<T> &ForwardList<T>::operator=(ForwardList &&other) noexcept {
-        if (this == &other)
-            return *this;
+        if (this == &other) return *this;
         clear();
         head = other.head;
         len = other.len;
@@ -157,7 +171,7 @@ namespace MySTL {
     ForwardList<T>::ForwardList(std::initializer_list<T> list) {
         auto p = list.begin();
         auto q = head;
-        Node* pre = nullptr;
+        Node *pre = nullptr;
         while (p != list.end()) {
             q = new Node(*p);
             if (head == nullptr)
@@ -182,24 +196,20 @@ namespace MySTL {
 
     template<typename T>
     void ForwardList<T>::clear() {
-        while (head)
-            pop_front();
+        while (head) pop_front();
     }
 
     template<typename T>
     T &ForwardList<T>::front() {
-        if (head == nullptr)
-            throw std::out_of_range("ForwardList is empty");
+        if (head == nullptr) throw std::out_of_range("ForwardList is empty");
         return head->data;
     }
 
     template<typename T>
     T &ForwardList<T>::back() {
-        if (head == nullptr)
-            throw std::out_of_range("ForwardList is empty");
+        if (head == nullptr) throw std::out_of_range("ForwardList is empty");
         auto p = head;
-        while (p->next)
-            p = p->next;
+        while (p->next) p = p->next;
         return p->data;
     }
 
@@ -227,11 +237,10 @@ namespace MySTL {
     void ForwardList<T>::insert_after(const T &value, size_t pos) {
         int index = 0;
         auto p = head;
-        Node* pre = nullptr;
+        Node *pre = nullptr;
         while (index < pos) {
             ++index;
-            if (p == nullptr)
-                throw std::out_of_range("Index out of range");
+            if (p == nullptr) throw std::out_of_range("Index out of range");
             pre = p;
             p = p->next;
         }
@@ -243,11 +252,10 @@ namespace MySTL {
     void ForwardList<T>::insert_after(T &&value, size_t pos) {
         size_t index = 0;
         auto p = head;
-        Node* pre = nullptr;
+        Node *pre = nullptr;
         while (index < pos) {
             ++index;
-            if (p == nullptr)
-                throw std::out_of_range("Index out of range");
+            if (p == nullptr) throw std::out_of_range("Index out of range");
             pre = p;
             p = p->next;
         }
@@ -260,11 +268,10 @@ namespace MySTL {
     void ForwardList<T>::emplace_after(size_t pos, Args... args) {
         size_t index = 0;
         auto p = head;
-        Node* pre = nullptr;
+        Node *pre = nullptr;
         while (index < pos) {
             ++index;
-            if (p == nullptr)
-                throw std::out_of_range("Index out of range");
+            if (p == nullptr) throw std::out_of_range("Index out of range");
             pre = p;
             p = p->next;
         }
@@ -276,11 +283,10 @@ namespace MySTL {
     void ForwardList<T>::erase_after(size_t pos) {
         size_t index = 0;
         auto p = head;
-        Node* pre = nullptr;
+        Node *pre = nullptr;
         while (index < pos) {
             ++index;
-            if (p == nullptr)
-                throw std::out_of_range("Index out of range");
+            if (p == nullptr) throw std::out_of_range("Index out of range");
             pre = p;
             p = p->next;
         }
@@ -290,7 +296,7 @@ namespace MySTL {
 
     template<typename T>
     void ForwardList<T>::reverse() {
-        Node* pre = nullptr;
+        Node *pre = nullptr;
         auto p = head;
         while (p) {
             auto q = p->next;
@@ -301,7 +307,6 @@ namespace MySTL {
         head = pre;
     }
 
-}
+}  // namespace MySTL
 
-
-#endif //MYSTL_FORWARDLIST_H
+#endif  // MYSTL_FORWARDLIST_H

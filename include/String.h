@@ -85,7 +85,6 @@ namespace MySTL {
         template<typename... Args>
         static String format(const char *format, Args... args);
 
-
         using iterator = GenericIterator<char>;
         using const_iterator = GenericIterator<const char>;
         // todo: implement iterator for char with UTF-8
@@ -106,9 +105,9 @@ namespace MySTL {
         static void formatHelper(std::ostringstream &stream, const char *format);
 
         template<typename T, typename... Args>
-        static void formatHelper(std::ostringstream &stream, const char *format, T value, Args... args);
+        static void formatHelper(std::ostringstream &stream, const char *format,
+                                 T value, Args... args);
     };
-}
+}  // namespace MySTL
 
-
-#endif // STRING_H_
+#endif  // STRING_H_

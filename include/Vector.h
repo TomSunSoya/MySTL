@@ -64,7 +64,7 @@ namespace MySTL {
         void erase(size_t index);
 
         template<typename... Args>
-        void emplace_back(Args &&... args);
+        void emplace_back(Args &&...args);
 
         void swap(Vector &other) noexcept;
 
@@ -108,8 +108,7 @@ namespace MySTL {
 
         void move_elements_to(T *destination);
     };
-}
-
+}  // namespace MySTL
 
 namespace MySTL {
     template<typename T>
@@ -118,7 +117,6 @@ namespace MySTL {
         len = 0;
         cap = MIN_SIZE;
     }
-
 
     template<typename T>
     Vector<T>::Vector(size_t sz, const T &t) {
@@ -177,11 +175,10 @@ namespace MySTL {
     }
 
     template<typename T>
-    Vector<T>::Vector(std::initializer_list<T> list) : data(allocate_memory(list.size())), len(list.size()),
-                                                       cap(list.size()) {
+    Vector<T>::Vector(std::initializer_list<T> list)
+            : data(allocate_memory(list.size())), len(list.size()), cap(list.size()) {
         std::copy(list.begin(), list.end(), data);
     }
-
 
     template<typename T>
     Vector<T>::~Vector() {
@@ -239,7 +236,7 @@ namespace MySTL {
 
     template<typename T>
     void Vector<T>::deallocate_memory(T *t) {
-        delete[]t;
+        delete[] t;
     }
 
     template<typename T>
@@ -285,19 +282,16 @@ namespace MySTL {
         }
     }
 
-
     template<typename T>
     void Vector<T>::push_back(const T &value) {
-        if (len >= cap)
-            grow_capacity();
+        if (len >= cap) grow_capacity();
         data[len] = value;
         ++len;
     }
 
     template<typename T>
     void Vector<T>::push_back(T &&value) {
-        if (len >= cap)
-            grow_capacity();
+        if (len >= cap) grow_capacity();
         data[len] = std::move(value);
         ++len;
     }
@@ -337,15 +331,13 @@ namespace MySTL {
 
     template<typename T>
     T &Vector<T>::at(size_t index) {
-        if (index >= len)
-            throw std::out_of_range("Index out of range");
+        if (index >= len) throw std::out_of_range("Index out of range");
         return data[index];
     }
 
     template<typename T>
     const T &Vector<T>::at(size_t index) const {
-        if (index >= len)
-            throw std::out_of_range("Index out of range");
+        if (index >= len) throw std::out_of_range("Index out of range");
         return data[index];
     }
 
@@ -371,7 +363,7 @@ namespace MySTL {
 
     template<typename T>
     template<typename... Args>
-    void Vector<T>::emplace_back(Args &&... args) {
+    void Vector<T>::emplace_back(Args &&...args) {
         if (len == cap) {
             grow_capacity();
         }
@@ -386,7 +378,6 @@ namespace MySTL {
         swap(len, other.len);
         swap(cap, other.cap);
     }
-
 
     template<typename T>
     typename Vector<T>::iterator Vector<T>::begin() {
@@ -427,6 +418,6 @@ namespace MySTL {
     typename Vector<T>::const_reverse_iterator Vector<T>::crend() {
         return const_reverse_iterator(data - 1);
     }
-}
+}  // namespace MySTL
 
 #endif

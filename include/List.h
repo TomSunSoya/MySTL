@@ -5,7 +5,6 @@
 
 #include "GenericIterator.h"
 
-
 namespace MySTL {
     template<typename T>
     class List {
@@ -64,14 +63,14 @@ namespace MySTL {
 
         const_reverse_iterator crend() const;
 
-
     private:
         struct Node {
             T data;
             Node *prev;
             Node *next;
 
-            explicit Node(const T &data) : data(data), prev(nullptr), next(nullptr) {}
+            explicit Node(const T &data)
+                    : data(data), prev(nullptr), next(nullptr) {}
         };
 
         Node *head;
@@ -162,8 +161,7 @@ namespace MySTL {
     bool List<T>::find(const T &value) {
         Node *current = head;
         while (current) {
-            if (current->data == value)
-                return true;
+            if (current->data == value) return true;
             current = current->next;
         }
         return false;
@@ -184,12 +182,13 @@ namespace MySTL {
     template<typename T>
     void List<T>::erase(const size_t pos) {
         if (pos >= len) throw std::out_of_range("Index out of range");
-        if (pos == 0) pop_front();
-        else if (pos == len - 1) pop_back();
+        if (pos == 0)
+            pop_front();
+        else if (pos == len - 1)
+            pop_back();
         else {
             auto current = head;
-            for (size_t i = 0; i < pos; ++i)
-                current = current->next;
+            for (size_t i = 0; i < pos; ++i) current = current->next;
             current->prev->next = current->next;
             current->next->prev = current->prev;
             delete current;
@@ -202,8 +201,10 @@ namespace MySTL {
         Node *current = head;
         while (current) {
             if (current->data == value) {
-                if (current == head) pop_front();
-                else if (current == tail) pop_back();
+                if (current == head)
+                    pop_front();
+                else if (current == tail)
+                    pop_back();
                 else {
                     current->prev->next = current->next;
                     current->next->prev = current->prev;
@@ -218,13 +219,14 @@ namespace MySTL {
     template<typename T>
     void List<T>::insert(const T &value, const size_t pos) {
         if (pos > len) throw std::out_of_range("Index out of range");
-        if (pos == 0) push_front(value);
-        else if (pos == len) push_back(value);
+        if (pos == 0)
+            push_front(value);
+        else if (pos == len)
+            push_back(value);
         else {
             auto node = new Node(value);
             auto current = head;
-            for (size_t i = 0; i < pos; ++i)
-                current = current->next;
+            for (size_t i = 0; i < pos; ++i) current = current->next;
             current->prev->next = node;
             node->prev = current->prev;
             node->next = current;
@@ -288,7 +290,6 @@ namespace MySTL {
     typename List<T>::const_reverse_iterator List<T>::crend() const {
         return const_reverse_iterator(nullptr);
     }
-}
+}  // namespace MySTL
 
-
-#endif //LIST_H
+#endif  // LIST_H

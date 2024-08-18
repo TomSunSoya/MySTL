@@ -3,7 +3,7 @@
 
 #include <cstddef>
 #include <iostream>
-#include <new> // For std::bad_alloc
+#include <new>  // For std::bad_alloc
 
 namespace MySTL {
 
@@ -24,9 +24,9 @@ namespace MySTL {
         };
 
         pointer allocate(size_type n, const void *hint = nullptr) {
-            if (n > this->max_size())
-                throw std::bad_alloc();
-            return static_cast<pointer>(::operator new[](n * sizeof(T)));               // new T[n]会调用T的默认构造函数
+            if (n > this->max_size()) throw std::bad_alloc();
+            return static_cast<pointer>(
+                    ::operator new[](n * sizeof(T)));  // new T[n]会调用T的默认构造函数
         }
 
         void deallocate(pointer p, size_type /* n */) noexcept {
@@ -34,17 +34,13 @@ namespace MySTL {
         }
 
         template<typename U, typename... Args>
-        void construct(U *p, Args &&... args) {
+        void construct(U *p, Args &&...args) {
             new(static_cast<void *>(p)) U(std::forward<Args>(args)...);
         }
 
-        void destroy(pointer p) noexcept {
-            p->~T();
-        }
+        void destroy(pointer p) noexcept { p->~T(); }
 
-        pointer address(reference x) const noexcept {
-            return std::addressof(x);
-        }
+        pointer address(reference x) const noexcept { return std::addressof(x); }
 
         const_pointer const_address(const_reference x) const noexcept {
             return std::addressof(x);
@@ -55,6 +51,6 @@ namespace MySTL {
         }
     };
 
-}
+}  // namespace MySTL
 
-#endif // MYSTL_ALLOCATOR_H
+#endif  // MYSTL_ALLOCATOR_H
