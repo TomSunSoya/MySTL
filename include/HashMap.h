@@ -10,11 +10,11 @@
 namespace MySTL {
     template<typename K, typename V, typename Hash = std::hash<K>,
             typename Equal = std::equal_to<K> >
-    class HashMap {
+    class HashMultiMap {
     public:
-        explicit HashMap(size_t initCap = 16, double loadFactor = 0.75);
+        explicit HashMultiMap(size_t initCap = 16, double loadFactor = 0.75);
 
-        ~HashMap() = default;
+        ~HashMultiMap() = default;
 
         [[nodiscard]] bool empty() const;
 
@@ -52,7 +52,7 @@ namespace MySTL {
     };
 
     template<typename K, typename V, typename Hash, typename Equal>
-    V *HashMap<K, V, Hash, Equal>::find(const K &key) {
+    V *HashMultiMap<K, V, Hash, Equal>::find(const K &key) {
         size_t index = hasher(key) % cap;
         for (auto &pair: table[index])
             if (equal(pair.first, key)) return &pair.second;
@@ -60,7 +60,7 @@ namespace MySTL {
     }
 
     template<typename K, typename V, typename Hash, typename Equal>
-    void HashMap<K, V, Hash, Equal>::rehash() {
+    void HashMultiMap<K, V, Hash, Equal>::rehash() {
         VectorType newTable(cap * 2);
         for (auto &list: table) {
             for (auto &pair: list) {
@@ -73,7 +73,7 @@ namespace MySTL {
     }
 
     template<typename K, typename V, typename Hash, typename Equal>
-    void HashMap<K, V, Hash, Equal>::insert(const K &k, const V &v) {
+    void HashMultiMap<K, V, Hash, Equal>::insert(const K &k, const V &v) {
         size_t index = hasher(k) % cap;
         for (auto &pair: table[index]) {
             if (equal(pair.first, k)) {
@@ -89,33 +89,33 @@ namespace MySTL {
     }
 
     template<typename K, typename V, typename Hash, typename Equal>
-    HashMap<K, V, Hash, Equal>::HashMap(size_t initCap, double loadFactor)
+    HashMultiMap<K, V, Hash, Equal>::HashMultiMap(size_t initCap, double loadFactor)
             : table(initCap), len(0), loadFactor(loadFactor), cap(initCap) {}
 
     template<typename K, typename V, typename Hash, typename Equal>
-    bool HashMap<K, V, Hash, Equal>::empty() const {
+    bool HashMultiMap<K, V, Hash, Equal>::empty() const {
         return len == 0;
     }
 
     template<typename K, typename V, typename Hash, typename Equal>
-    size_t HashMap<K, V, Hash, Equal>::size() const {
+    size_t HashMultiMap<K, V, Hash, Equal>::size() const {
         return len;
     }
 
     template<typename K, typename V, typename Hash, typename Equal>
-    void HashMap<K, V, Hash, Equal>::clear() {
+    void HashMultiMap<K, V, Hash, Equal>::clear() {
         table.clear();
         len = 0;
         table.resize(cap);
     }
 
     template<typename K, typename V, typename Hash, typename Equal>
-    void HashMap<K, V, Hash, Equal>::insert(const Pair<K, V> &pair) {
+    void HashMultiMap<K, V, Hash, Equal>::insert(const Pair<K, V> &pair) {
         insert(pair.first, pair.second);
     }
 
     template<typename K, typename V, typename Hash, typename Equal>
-    void HashMap<K, V, Hash, Equal>::erase(const K &key) {
+    void HashMultiMap<K, V, Hash, Equal>::erase(const K &key) {
         size_t index = hasher(key) % cap;
         for (auto it = table[index].begin(); it != table[index].end(); ++it) {
             if (equal(it->first, key)) {
@@ -127,7 +127,7 @@ namespace MySTL {
     }
 
     template<typename K, typename V, typename Hash, typename Equal>
-    V &HashMap<K, V, Hash, Equal>::at(const K &key) {
+    V &HashMultiMap<K, V, Hash, Equal>::at(const K &key) {
         size_t index = hasher(key) % cap;
         for (auto &pair: table[index]) {
             if (equal(pair.first, key)) return pair.second;
@@ -139,12 +139,12 @@ namespace MySTL {
     }
 
     template<typename K, typename V, typename Hash, typename Equal>
-    V &HashMap<K, V, Hash, Equal>::operator[](const K &key) {
+    V &HashMultiMap<K, V, Hash, Equal>::operator[](const K &key) {
         return at(key);
     }
 
     template<typename K, typename V, typename Hash, typename Equal>
-    bool HashMap<K, V, Hash, Equal>::contains(const K &key) const {
+    bool HashMultiMap<K, V, Hash, Equal>::contains(const K &key) const {
         size_t index = hasher(key) % cap;
         for (auto &pair: table[index])
             if (equal(pair.first, key)) return true;
