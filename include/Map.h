@@ -4,28 +4,9 @@
 #include <cstdlib>
 #include <functional>
 
+#include "utils/RBTreeNode.h"
+
 namespace MySTL {
-    enum Color {
-        RED, BLACK
-    };
-
-    template<typename K, typename V>
-    struct RBTreeNode {
-        K key;
-        V value;
-        Color color;
-        RBTreeNode *left;
-        RBTreeNode *right;
-        RBTreeNode *parent;
-
-        RBTreeNode(K key, V value)
-                : key(key),
-                  value(value),
-                  color(RED),
-                  left(nullptr),
-                  right(nullptr),
-                  parent(nullptr) {}
-    };
 
     template<typename K, typename V, typename Compare = std::less<K> >
     class Map {

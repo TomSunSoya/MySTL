@@ -1,5 +1,5 @@
-#ifndef MYSTL_HASHMAP_H
-#define MYSTL_HASHMAP_H
+#ifndef MYSTL_HASHMULTIMAP_H
+#define MYSTL_HASHMULTIMAP_H
 
 #include <functional>
 
@@ -26,15 +26,15 @@ namespace MySTL {
 
         void insert(const Pair<K, V> &pair);
 
-        void erase(const K &key);
+        size_t erase(const K &key);
 
-        V &at(const K &key);
-
-        V &operator[](const K &key);
+        void erase(const K &key, const V &value);
 
         bool contains(const K &key) const;
 
-        V *find(const K &key);
+        List<V> find(const K &key) const;
+
+        size_t count(const K &key) const;
 
     private:
         using PairType = Pair<K, V>;
@@ -52,11 +52,21 @@ namespace MySTL {
     };
 
     template<typename K, typename V, typename Hash, typename Equal>
-    V *HashMultiMap<K, V, Hash, Equal>::find(const K &key) {
+    size_t HashMultiMap<K, V, Hash, Equal>::count(const K &key) const {
         size_t index = hasher(key) % cap;
+        size_t count = 0;
         for (auto &pair: table[index])
-            if (equal(pair.first, key)) return &pair.second;
-        return nullptr;
+            if (equal(pair.first, key)) ++count;
+        return count;
+    }
+
+    template<typename K, typename V, typename Hash, typename Equal>
+    List<V> HashMultiMap<K, V, Hash, Equal>::find(const K &key) const {
+        size_t index = hasher(key) % cap;
+        List<V> res;
+        for (auto &pair: table[index])
+            if (equal(pair.first, key)) res.push_back(pair.second);
+        return res;
     }
 
     template<typename K, typename V, typename Hash, typename Equal>
@@ -75,12 +85,6 @@ namespace MySTL {
     template<typename K, typename V, typename Hash, typename Equal>
     void HashMultiMap<K, V, Hash, Equal>::insert(const K &k, const V &v) {
         size_t index = hasher(k) % cap;
-        for (auto &pair: table[index]) {
-            if (equal(pair.first, k)) {
-                pair.second = v;
-                return;
-            }
-        }
         table[index].emplace_back(k, v);
         ++len;
         if (static_cast<double>(len) / cap > loadFactor) {
@@ -104,6 +108,7 @@ namespace MySTL {
 
     template<typename K, typename V, typename Hash, typename Equal>
     void HashMultiMap<K, V, Hash, Equal>::clear() {
+        for (auto &x: table) x.clear();
         table.clear();
         len = 0;
         table.resize(cap);
@@ -115,32 +120,29 @@ namespace MySTL {
     }
 
     template<typename K, typename V, typename Hash, typename Equal>
-    void HashMultiMap<K, V, Hash, Equal>::erase(const K &key) {
+    size_t HashMultiMap<K, V, Hash, Equal>::erase(const K &key) {
         size_t index = hasher(key) % cap;
-        for (auto it = table[index].begin(); it != table[index].end(); ++it) {
+        int count = 0;
+        for (auto it = table[index].begin(); it != table[index].end();) {
             if (equal(it->first, key)) {
+                it = table[index].erase(it);
+                --len;
+                ++count;
+            } else ++it;
+        }
+        return count;
+    }
+
+    template<typename K, typename V, typename Hash, typename Equal>
+    void HashMultiMap<K, V, Hash, Equal>::erase(const K &key, const V &value) {
+        size_t index = hasher(key) % cap;
+        for (auto it = table[index].begin(); it != table[index].end();) {
+            if (equal(it->first, key) && it->second == value) {
                 table[index].erase(it);
                 --len;
-                return;
-            }
+                break;
+            } else ++it;
         }
-    }
-
-    template<typename K, typename V, typename Hash, typename Equal>
-    V &HashMultiMap<K, V, Hash, Equal>::at(const K &key) {
-        size_t index = hasher(key) % cap;
-        for (auto &pair: table[index]) {
-            if (equal(pair.first, key)) return pair.second;
-        }
-        table[index].emplace_back(key, V());
-        ++len;
-        if (static_cast<double>(len) / cap > loadFactor) rehash();
-        return table[index].back().second;
-    }
-
-    template<typename K, typename V, typename Hash, typename Equal>
-    V &HashMultiMap<K, V, Hash, Equal>::operator[](const K &key) {
-        return at(key);
     }
 
     template<typename K, typename V, typename Hash, typename Equal>
@@ -153,4 +155,4 @@ namespace MySTL {
 
 }  // namespace MySTL
 
-#endif  // MYSTL_HASHMAP_H
+#endif //MYSTL_HASHMULTIMAP_H
