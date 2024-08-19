@@ -26,7 +26,7 @@ namespace MySTL {
         void clear();
 
     private:
-        HashMultiMap<T, bool, Hash, Equal> hashMap;
+        HashMap<T, bool, Hash, Equal> hashMap;
     };
 
     template<typename T, typename Hash, typename Equal>
