@@ -7,6 +7,7 @@
 #include "utils/RBTreeNode.h"
 
 #include "ReverseIterator.h"
+#include "Pair.h"
 
 namespace MySTL {
 
@@ -33,16 +34,22 @@ namespace MySTL {
 
         class Iterator {
         public:
+            using iterator_category = std::bidirectional_iterator_tag;
+            using value_type = Pair<K, V>;
+            using difference_type = std::ptrdiff_t;
+            using pointer = Pair<K, V> *;
+            using reference = Pair<K, V> &;
+
             using Node = RBTreeNode<K, V>;
 
-            Iterator(Node *node) : node(node) {}
+            explicit Iterator(Node *node) : node(node) {}
 
-            V &operator*() const {
-                return node->value;
+            reference operator*() const {
+                return Pair<K, V>::make_pair(node->key, node->value);
             }
 
-            V *operator->() const {
-                return &node->value;
+            pointer operator->() const {
+                return &Pair<K, V>::make_pair(node->key, node->value);
             }
 
             Iterator &operator++() {
@@ -91,7 +98,6 @@ namespace MySTL {
         using const_iterator = const Iterator;
         using reverse_iterator = ReverseIterator<iterator>;
         using reverse_const_iterator = ReverseIterator<const_iterator>;
-        using iterator_category = std::bidirectional_iterator_tag;
 
         iterator begin() {
             return iterator(minimum(root));

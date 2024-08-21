@@ -37,6 +37,10 @@ namespace MySTL {
 
         T1 first;
         T2 second;
+
+        static Pair<T1, T2> make_pair(const T1 &first, const T2 &second) {
+            return Pair<T1, T2>(first, second);
+        }
     };
 
     template<typename T1, typename T2>

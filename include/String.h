@@ -3,8 +3,6 @@
 
 #include <sstream>
 
-#include "GenericIterator.h"
-
 namespace MySTL {
     // TODO: to be refactored
     class String final {
@@ -85,9 +83,6 @@ namespace MySTL {
 
         template<typename... Args>
         static String format(const char *format, Args... args);
-
-        using iterator = GenericIterator<char>;
-        using const_iterator = GenericIterator<const char>;
         // todo: implement iterator for char with UTF-8
 
     private:

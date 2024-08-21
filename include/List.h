@@ -53,13 +53,19 @@ namespace MySTL {
 
         class Iterator {
         public:
+            using iterator_category = std::bidirectional_iterator_tag;
+            using value_type = T;
+            using difference_type = std::ptrdiff_t;
+            using pointer = T *;
+            using reference = T &;
+
             explicit Iterator(Node *node = nullptr) : node(node) {}
 
-            T &operator*() const {
+            reference operator*() const {
                 return node->data;
             }
 
-            T *operator->() const {
+            pointer operator->() const {
                 return &node->data;
             }
 
@@ -89,7 +95,6 @@ namespace MySTL {
         using const_iterator = const Iterator;
         using reverse_iterator = ReverseIterator<iterator>;
         using const_reverse_iterator = ReverseIterator<const_iterator>;
-        using iterator_category = std::bidirectional_iterator_tag;
 
         iterator begin();
 
