@@ -6,6 +6,9 @@
 
 #include "utils/RBTreeNode.h"
 
+#include "ReverseIterator.h"
+#include "Pair.h"
+
 namespace MySTL {
 
     template<typename K, typename V, typename Compare = std::less<K> >
@@ -28,6 +31,105 @@ namespace MySTL {
         void clear();
 
         bool contains(const K &key) const;
+
+        class Iterator {
+        public:
+            using iterator_category = std::bidirectional_iterator_tag;
+            using value_type = Pair<K, V>;
+            using difference_type = std::ptrdiff_t;
+            using pointer = Pair<K, V> *;
+            using reference = Pair<K, V> &;
+
+            using Node = RBTreeNode<K, V>;
+
+            explicit Iterator(Node *node) : node(node) {}
+
+            reference operator*() const {
+                return Pair<K, V>::make_pair(node->key, node->value);
+            }
+
+            pointer operator->() const {
+                return &Pair<K, V>::make_pair(node->key, node->value);
+            }
+
+            Iterator &operator++() {
+                if (node->right != nullptr) {
+                    node = node->right;
+                    while (node->left != nullptr) node = node->left;
+                } else {
+                    auto parent = node->parent;
+                    while (parent != nullptr && node == parent->right) {
+                        node = parent;
+                        parent = parent->parent;
+                    }
+                    node = parent;
+                }
+                return *this;
+            }
+
+            Iterator &operator--() {
+                if (node->left != nullptr) {
+                    node = node->left;
+                    while (node->right != nullptr) node = node->right;
+                } else {
+                    auto parent = node->parent;
+                    while (parent != nullptr && node == parent->left) {
+                        node = parent;
+                        parent = parent->parent;
+                    }
+                    node = parent;
+                }
+                return *this;
+            }
+
+            bool operator==(const Iterator &other) const {
+                return node == other.node;
+            }
+
+            bool operator!=(const Iterator &other) const {
+                return node != other.node;
+            }
+
+        private:
+            Node *node;
+        };
+
+        using iterator = Iterator;
+        using const_iterator = const Iterator;
+        using reverse_iterator = ReverseIterator<iterator>;
+        using reverse_const_iterator = ReverseIterator<const_iterator>;
+
+        iterator begin() {
+            return iterator(minimum(root));
+        }
+
+        iterator end() {
+            return iterator(nullptr);
+        }
+
+        const_iterator cbegin() const {
+            return const_iterator(minimum(root));
+        }
+
+        const_iterator cend() const {
+            return const_iterator(nullptr);
+        }
+
+        reverse_iterator rbegin() {
+            return reverse_iterator(maximum(root));
+        }
+
+        reverse_iterator rend() {
+            return reverse_iterator(nullptr);
+        }
+
+        reverse_const_iterator crbegin() const {
+            return reverse_const_iterator(maximum(root));
+        }
+
+        reverse_const_iterator crend() const {
+            return reverse_const_iterator(nullptr);
+        }
 
     private:
         RBTreeNode<K, V> *root;

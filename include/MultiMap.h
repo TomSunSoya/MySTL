@@ -27,11 +27,11 @@ namespace MySTL {
             ~Iterator() = default;
 
             reference operator*() const {
-                return node->value;
+                return Pair<K, V>::make_pair(node->key, node->value);
             }
 
             pointer operator->() const {
-                return &node->value;
+                return &Pair<K, V>::make_pair(node->key, node->value);
             }
 
             Iterator &operator++() {

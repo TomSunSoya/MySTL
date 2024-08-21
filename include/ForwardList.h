@@ -4,12 +4,61 @@
 #include <stdexcept>
 #include <utility>
 
-#include "GenericIterator.h"
-
 namespace MySTL {
 
     template<typename T>
     class ForwardList {
+        struct Node {
+            T data;
+            Node *next;
+
+            explicit Node(const T &d = T(), Node *n = nullptr) : data(d), next(n) {}
+
+            explicit Node(T &&d, Node *n = nullptr) : data(std::move(d)), next(n) {}
+        };
+
+    public:
+        class Iterator {
+        public:
+            using iterator_category = std::forward_iterator_tag;
+            using value_type = T;
+            using difference_type = std::ptrdiff_t;
+            using pointer = T *;
+            using reference = T &;
+
+            explicit Iterator(Node *node = nullptr) : node(node) {}
+
+            reference operator*() const {
+                return node->data;
+            }
+
+            pointer operator->() const {
+                return &node->data;
+            }
+
+            Iterator &operator++() {
+                node = node->next;
+                return *this;
+            }
+
+            Iterator operator++(int) {
+                auto temp = *this;
+                node = node->next;
+                return temp;
+            }
+
+            bool operator==(const Iterator &other) const {
+                return node == other.node;
+            }
+
+            bool operator!=(const Iterator &other) const {
+                return node != other.node;
+            }
+
+        private:
+            Node *node;
+        };
+
     public:
         ForwardList();
 
@@ -52,10 +101,8 @@ namespace MySTL {
 
         void reverse();
 
-        void resize(size_t sz);
-
-        using iterator = GenericIterator<T>;
-        using const_iterator = GenericIterator<const T>;
+        using iterator = Iterator;
+        using const_iterator = const Iterator;
 
         iterator begin();
 
@@ -66,14 +113,6 @@ namespace MySTL {
         const_iterator cend();
 
     private:
-        struct Node {
-            T data;
-            Node *next;
-
-            explicit Node(const T &d = T(), Node *n = nullptr) : data(d), next(n) {}
-
-            explicit Node(T &&d, Node *n = nullptr) : data(std::move(d)), next(n) {}
-        };
 
         Node *head;
         size_t len;

@@ -3,11 +3,20 @@
 
 #include <stdexcept>
 
-#include "GenericIterator.h"
+#include "ReverseIterator.h"
 
 namespace MySTL {
     template<typename T>
     class List {
+        struct Node {
+            T data;
+            Node *prev;
+            Node *next;
+
+            explicit Node(const T &data)
+                    : data(data), prev(nullptr), next(nullptr) {}
+        };
+
     public:
         List();
 
@@ -42,10 +51,50 @@ namespace MySTL {
 
         bool find(const T &value);
 
-        using iterator = GenericIterator<T>;
-        using const_iterator = GenericIterator<const T>;
-        using reverse_iterator = GenericReverseIterator<T>;
-        using const_reverse_iterator = GenericReverseIterator<const T>;
+        class Iterator {
+        public:
+            using iterator_category = std::bidirectional_iterator_tag;
+            using value_type = T;
+            using difference_type = std::ptrdiff_t;
+            using pointer = T *;
+            using reference = T &;
+
+            explicit Iterator(Node *node = nullptr) : node(node) {}
+
+            reference operator*() const {
+                return node->data;
+            }
+
+            pointer operator->() const {
+                return &node->data;
+            }
+
+            Iterator &operator++() {
+                node = node->next;
+                return *this;
+            }
+
+            Iterator &operator--() {
+                node = node->prev;
+                return *this;
+            }
+
+            bool operator==(const Iterator &other) const {
+                return node == other.node;
+            }
+
+            bool operator!=(const Iterator &other) const {
+                return node != other.node;
+            }
+
+        private:
+            Node *node;
+        };
+
+        using iterator = Iterator;
+        using const_iterator = const Iterator;
+        using reverse_iterator = ReverseIterator<iterator>;
+        using const_reverse_iterator = ReverseIterator<const_iterator>;
 
         iterator begin();
 
@@ -64,15 +113,6 @@ namespace MySTL {
         const_reverse_iterator crend() const;
 
     private:
-        struct Node {
-            T data;
-            Node *prev;
-            Node *next;
-
-            explicit Node(const T &data)
-                    : data(data), prev(nullptr), next(nullptr) {}
-        };
-
         Node *head;
         Node *tail;
         size_t len{};

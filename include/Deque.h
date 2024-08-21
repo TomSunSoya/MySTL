@@ -6,6 +6,8 @@
 #include <cstring>
 #include <stdexcept>
 
+#include "ReverseIterator.h"
+
 namespace MySTL {
 
     template<typename T>
@@ -172,6 +174,27 @@ namespace MySTL {
 
         void erase(size_t index);
 
+        using iterator = Iterator;
+        using const_iterator = const Iterator;
+        using reverse_iterator = ReverseIterator<iterator>;
+        using const_reverse_iterator = ReverseIterator<const_iterator>;
+
+        iterator begin();
+
+        iterator end();
+
+        const_iterator cbegin();
+
+        const_iterator cend();
+
+        reverse_iterator rbegin();
+
+        reverse_iterator rend();
+
+        const_reverse_iterator crbegin();
+
+        const_reverse_iterator crend();
+
     private:
         Block **map;
         size_t mapSize;
@@ -186,11 +209,6 @@ namespace MySTL {
         Iterator finish{};
 
         void expandMap();
-
-    public:
-        Iterator &begin();
-
-        Iterator &end();
     };
 
     template<typename T>
@@ -230,13 +248,43 @@ namespace MySTL {
     }
 
     template<typename T>
-    Deque<T>::Iterator &Deque<T>::end() {
+    Deque<T>::iterator Deque<T>::begin() {
         return Deque::start;
     }
 
     template<typename T>
-    Deque<T>::Iterator &Deque<T>::begin() {
+    Deque<T>::iterator Deque<T>::end() {
         return Deque::finish + 1;
+    }
+
+    template<typename T>
+    Deque<T>::const_iterator Deque<T>::cbegin() {
+        return Deque::start;
+    }
+
+    template<typename T>
+    Deque<T>::const_iterator Deque<T>::cend() {
+        return Deque::finish + 1;
+    }
+
+    template<typename T>
+    Deque<T>::reverse_iterator Deque<T>::rbegin() {
+        return Deque::finish;
+    }
+
+    template<typename T>
+    Deque<T>::reverse_iterator Deque<T>::rend() {
+        return Deque::start - 1;
+    }
+
+    template<typename T>
+    Deque<T>::const_reverse_iterator Deque<T>::crbegin() {
+        return Deque::finish;
+    }
+
+    template<typename T>
+    Deque<T>::const_reverse_iterator Deque<T>::crend() {
+        return Deque::start - 1;
     }
 
     template<typename T>

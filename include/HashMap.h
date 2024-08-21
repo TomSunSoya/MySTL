@@ -9,7 +9,7 @@
 
 namespace MySTL {
     template<typename K, typename V, typename Hash = std::hash<K>,
-            typename Equal = std::equal_to<K> >
+            typename Equal = std::equal_to<K>>
     class HashMap {
     public:
         explicit HashMap(size_t initCap = 16, double loadFactor = 0.75);

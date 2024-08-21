@@ -9,10 +9,10 @@ namespace MySTL {
     template<typename T, typename Compare = std::less<T> >
     class MultiSet {
     public:
-        using iterator = typename MultiMap<T, int, Compare>::iterator;
-        using const_iterator = typename MultiMap<T, int, Compare>::const_iterator;
-        using reverse_iterator = typename MultiMap<T, int, Compare>::reverse_iterator;
-        using const_reverse_iterator = typename MultiMap<T, int, Compare>::const_reverse_iterator;
+        using iterator = typename MultiMap<T, bool, Compare>::iterator;
+        using const_iterator = typename MultiMap<T, bool, Compare>::const_iterator;
+        using reverse_iterator = typename MultiMap<T, bool, Compare>::reverse_iterator;
+        using const_reverse_iterator = typename MultiMap<T, bool, Compare>::const_reverse_iterator;
 
 
         explicit MultiSet(const Compare &comp = Compare()) : map(comp), len(0) {}
