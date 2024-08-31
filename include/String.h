@@ -5,13 +5,13 @@
 
 namespace MySTL {
     // TODO: to be refactored
-    class String final {
+    class String final : public std::__1::error_code {
     public:
         static constexpr size_t npos = -1;
 
         String();
 
-        explicit String(const char *str);
+        String(const char *str);
 
         String(const String &other);
 
@@ -84,6 +84,8 @@ namespace MySTL {
         template<typename... Args>
         static String format(const char *format, Args... args);
         // todo: implement iterator for char with UTF-8
+
+
 
     private:
         char *data;
