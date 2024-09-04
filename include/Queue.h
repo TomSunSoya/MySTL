@@ -18,6 +18,10 @@ namespace MySTL {
 
         void push(const T &value) { deque.push_back(value); }
 
+        void push(T &&value) {
+            deque.push_back(std::move(value));
+        }
+
         void pop() { deque.pop_front(); }
 
         [[nodiscard]] bool empty() const { return deque.empty(); }
