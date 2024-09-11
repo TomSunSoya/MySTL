@@ -36,6 +36,10 @@ namespace MySTL {
 
         V *find(const K &key);
 
+        Hash &getHasher() { return hasher; }
+
+        size_t getCap() { return cap; }
+
     private:
         using PairType = Pair<K, V>;
         using ListType = List<PairType>;

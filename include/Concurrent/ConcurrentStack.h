@@ -9,15 +9,15 @@
 namespace MySTL {
 
     template<typename T>
-    class ConCurrentStack {
+    class ConcurrentStack {
     public:
-        ConCurrentStack() = default;
+        ConcurrentStack() = default;
 
-        ~ConCurrentStack() = default;
+        ~ConcurrentStack() = default;
 
-        ConCurrentStack(const ConCurrentStack &) = delete;
+        ConcurrentStack(const ConcurrentStack &) = delete;
 
-        ConCurrentStack &operator=(const ConCurrentStack &) = delete;
+        ConcurrentStack &operator=(const ConcurrentStack &) = delete;
 
         void push(const T &value);
 
@@ -37,19 +37,19 @@ namespace MySTL {
     };
 
     template<typename T>
-    void ConCurrentStack<T>::push(const T &value) {
+    void ConcurrentStack<T>::push(const T &value) {
         std::lock_guard<std::mutex> lock(mutex_);
         stack_.push(value);
     }
 
     template<typename T>
-    void ConCurrentStack<T>::push(T &&value) {
+    void ConcurrentStack<T>::push(T &&value) {
         std::lock_guard<std::mutex> lock(mutex_);
         stack_.push(std::move(value));
     }
 
     template<typename T>
-    bool ConCurrentStack<T>::try_pop(T &value) {
+    bool ConcurrentStack<T>::try_pop(T &value) {
         std::lock_guard<std::mutex> lock(mutex_);
         if (stack_.empty()) {
             return false;
@@ -60,22 +60,22 @@ namespace MySTL {
     }
 
     template<typename T>
-    void ConCurrentStack<T>::pop() {
+    void ConcurrentStack<T>::pop() {
         std::lock_guard<std::mutex> lock(mutex_);
         if (stack_.empty()) {
-            throw std::out_of_range("ConCurrentStack::pop");
+            throw std::out_of_range("ConcurrentStack::pop");
         }
         stack_.pop();
     }
 
     template<typename T>
-    bool ConCurrentStack<T>::empty() const {
+    bool ConcurrentStack<T>::empty() const {
         std::lock_guard<std::mutex> lock(mutex_);
         return stack_.empty();
     }
 
     template<typename T>
-    size_t ConCurrentStack<T>::size() const {
+    size_t ConcurrentStack<T>::size() const {
         std::lock_guard<std::mutex> lock(mutex_);
         return stack_.size();
     }
