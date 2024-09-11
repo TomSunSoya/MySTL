@@ -35,6 +35,14 @@ add_executable(MySTL
         include/Log/Logger.h
         include/Log/ConsoleLogger.h
         include/Log/FileLogger.h
+        include/Concurrent/ConcurrentVector.h
+        include/Concurrent/ConcurrentQueue.h
+        include/Concurrent/ConcurrentStack.h
+        include/Concurrent/ConcurrentDeque.h
+        include/Concurrent/ConcurrentHashMap.h
+        include/Concurrent/ConcurrentHashSet.h
+        include/Concurrent/ConcurrentMap.h
+        include/Concurrent/ConcurrentSet.h
 )
 
 # target_link_libraries(MySTL PRIVATE SomeOtherLibrary)

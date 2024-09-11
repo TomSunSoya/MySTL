@@ -158,7 +158,11 @@ namespace MySTL {
 
         void push_back(const T &value);
 
+        void push_back(T &&value);
+
         void push_front(const T &value);
+
+        void push_front(T &&value);
 
         void pop_back();
 
@@ -454,6 +458,32 @@ namespace MySTL {
     }
 
     template<typename T>
+    void Deque<T>::push_front(T &&value) {
+        if (firstIndex > 0) {
+            --firstIndex;
+            std::copy_backward(map[first]->elements + firstIndex,
+                               map[first]->elements + ELEMENTS_PER_BLOCK - 1,
+                               map[first]->elements + ELEMENTS_PER_BLOCK);
+        } else {
+            if (first == 0) {
+                auto newMapSize = mapSize * 2;
+                auto newMap = new Block *[newMapSize];
+                std::copy(map, map + mapSize, newMap + 1);
+                delete[] map;
+                map = newMap;
+                mapSize = newMapSize;
+                first = 1;
+            }
+            --first;
+            map[first] = new Block();
+            firstIndex = 0;
+        }
+        map[first]->elements[firstIndex] = std::move(value);
+        start = Iterator(&(map[first]->elements[firstIndex]));
+        ++len;
+    }
+
+    template<typename T>
     void Deque<T>::push_back(const T &value) {
         if (lastIndex == ELEMENTS_PER_BLOCK - 1) {
             if (last == mapSize - 1) {
@@ -471,6 +501,28 @@ namespace MySTL {
         } else
             ++lastIndex;
         map[last]->elements[lastIndex] = value;
+        finish = Iterator(&(map[last]->elements[lastIndex]));
+        ++len;
+    }
+
+    template<typename T>
+    void Deque<T>::push_back(T &&value) {
+        if (lastIndex == ELEMENTS_PER_BLOCK - 1) {
+            if (last == mapSize - 1) {
+                auto newMapSize = mapSize * 2;
+                auto newMap = new Block *[newMapSize];
+                std::copy(map, map + mapSize, newMap);
+                delete[] map;
+                map = newMap;
+                mapSize = newMapSize;
+                map[last] = new Block();
+            } else {
+                ++last;
+            }
+            lastIndex = 0;
+        } else
+            ++lastIndex;
+        map[last]->elements[lastIndex] = std::move(value);
         finish = Iterator(&(map[last]->elements[lastIndex]));
         ++len;
     }
